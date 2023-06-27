@@ -181,8 +181,10 @@ __device__ __forceinline__ double rocsparse_shfl(double var, int src_lane, int w
 __device__ __forceinline__ rocsparse_float_complex rocsparse_shfl(rocsparse_float_complex var, int src_lane, int width = warpSize) { return rocsparse_float_complex(__shfl(std::real(var), src_lane, width), __shfl(std::imag(var), src_lane, width)); }
 __device__ __forceinline__ rocsparse_double_complex rocsparse_shfl(rocsparse_double_complex var, int src_lane, int width = warpSize) { return rocsparse_double_complex(__shfl(std::real(var), src_lane, width), __shfl(std::imag(var), src_lane, width)); }
 
-__device__ __forceinline__ int64_t atomicMin(int64_t* ptr, int64_t val) { return atomicMin((unsigned long long*)ptr, val); }
-__device__ __forceinline__ int64_t atomicMax(int64_t* ptr, int64_t val) { return atomicMax((unsigned long long*)ptr, val); }
+template <typename = std::enable_if_t<std::is_same<int64_t, long>::value>>
+__device__ __forceinline__ int64_t atomicMin(int64_t* ptr, int64_t val) { return atomicMin((long long*)ptr, (long long)val); }
+template <typename = std::enable_if_t<std::is_same<int64_t, long>::value>>
+__device__ __forceinline__ int64_t atomicMax(int64_t* ptr, int64_t val) { return atomicMax((long long*)ptr, (long long)val); }
 __device__ __forceinline__ int64_t atomicAdd(int64_t* ptr, int64_t val) { return atomicAdd((unsigned long long*)ptr, val); }
 __device__ __forceinline__ int64_t atomicCAS(int64_t* ptr, int64_t cmp, int64_t val) { return atomicCAS((unsigned long long*)ptr, cmp, val); }
 
